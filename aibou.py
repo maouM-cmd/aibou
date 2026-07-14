@@ -23,6 +23,13 @@ PROMPTS_DIR = BASE_DIR / "prompts"
 # 環境変数 AIBOU_MODEL で上書き可能（例: メモリが厳しい時は llama3.2:1b）
 DEFAULT_MODEL = os.environ.get("AIBOU_MODEL", "hermes3:8b")
 
+# Qwen Cloud (DashScope OpenAI互換モード) 用の設定。AIBOU_PROVIDER=qwen の時のみ使用。
+# https://docs.qwencloud.com/developer-guides/getting-started/first-api-call
+DEFAULT_QWEN_MODEL = os.environ.get("AIBOU_QWEN_MODEL", "qwen3.7-plus")
+DEFAULT_QWEN_BASE_URL = os.environ.get(
+    "AIBOU_QWEN_BASE_URL", "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
+)
+
 # 会話履歴の上限メッセージ数（user+assistantで20 = 10往復。無制限に伸ばすと
 # コンテキストが肥大しローカルLLMの応答品質・速度が劣化するため）
 MAX_HISTORY_MESSAGES = 20
@@ -329,10 +336,13 @@ def execute_delegate_task(role: str, task: str, ollama_url: str, model: str) -> 
 class Aibou:
     """相棒AI — もう一人のあなた (Ollama + ChromaDB 対応版)"""
 
-    def __init__(self, model: str = DEFAULT_MODEL, ollama_url: str = "http://localhost:11434/api/chat", use_kb: bool = True):
+    def __init__(self, model: str = DEFAULT_MODEL, ollama_url: str = "http://localhost:11434/api/chat",
+                 use_kb: bool = True, provider: str | None = None):
         self.model = model
         self.ollama_url = ollama_url
         self.conversation_history = []
+        # "ollama"（既定・ローカル、後方互換） または "qwen"（Qwen Cloud、ハッカソン提出用）
+        self.provider = provider or os.environ.get("AIBOU_PROVIDER", "ollama")
         
         if use_kb:
             try:
@@ -352,8 +362,35 @@ class Aibou:
                 "必要に応じてTools（ツール）を呼び出し、ユーザーの代わりにファイルの作成などの作業を行ってください。"
             )
 
+    def _call_qwen_raw(self, messages: list, override_model: str = None) -> dict:
+        """Qwen Cloud (DashScope OpenAI互換モード) を呼び出し、Ollamaと同じ形のdict({"message": {"content": ...}})に正規化して返す。
+
+        注意: tools（Function Calling）は受け取らない。OpenAI互換APIのtool結果メッセージは
+        tool_call_id必須だが、_run_agent_loopはOllama形式（nameキーのみ）で積んでおり非互換のため、
+        Qwenモードではエージェントのツール呼び出し機能はスコープ外とする（知識ベース検索＋通常応答のみ）。
+        """
+        try:
+            from openai import OpenAI  # 遅延import（Ollama専用ユーザーに依存関係を強制しない）
+        except ImportError:
+            return {"error": "openaiパッケージが未インストールです（pip install openai）"}
+
+        api_key = os.environ.get("DASHSCOPE_API_KEY", "")
+        if not api_key:
+            return {"error": "DASHSCOPE_API_KEY が設定されていません"}
+
+        client = OpenAI(api_key=api_key, base_url=DEFAULT_QWEN_BASE_URL)
+        model_to_use = override_model or DEFAULT_QWEN_MODEL
+        try:
+            resp = client.chat.completions.create(model=model_to_use, messages=messages)
+            return {"message": {"content": resp.choices[0].message.content or ""}}
+        except Exception as e:
+            return {"error": f"Qwen Cloud通信エラー: {e}"}
+
     def _call_ollama_raw(self, messages: list, override_model: str = None, tools: list = None) -> dict:
-        """Ollama APIを呼び出し、生のレスポンス(dict)を返す"""
+        """Ollama APIを呼び出し、生のレスポンス(dict)を返す（provider="qwen"の場合はQwen Cloudに委譲）"""
+        if self.provider == "qwen":
+            return self._call_qwen_raw(messages, override_model=override_model)
+
         model_to_use = override_model if override_model else self.model
         data = {
             "model": model_to_use,

@@ -15,3 +15,6 @@ pyttsx3>=2.90
 keyboard>=0.13
 
 # 前提: Ollama がローカルで起動していること（ollama pull hermes3:8b）
+
+# --- Qwen Cloud対応（環境変数 AIBOU_PROVIDER=qwen の時のみ使用） ---
+openai>=1.0

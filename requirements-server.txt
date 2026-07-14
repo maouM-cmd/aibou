@@ -1,0 +1,9 @@
+# Docker/Alibaba Cloudデプロイ用の最小依存関係。
+# requirements.txt からデスクトップ常駐(app.py)専用パッケージ
+# （pygetwindow / mss / SpeechRecognition / pyttsx3 / keyboard）を除外したもの。
+# これらはWindows/デスクトップ環境前提でLinuxコンテナでは不要かつビルドが不安定なため。
+chromadb>=0.5
+rich>=13.0
+fastapi>=0.110
+uvicorn>=0.29
+openai>=1.0

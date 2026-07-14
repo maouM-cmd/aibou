@@ -1,0 +1,14 @@
+.git/
+.chroma_db/
+__pycache__/
+*.pyc
+extension/
+.env
+.gemini/
+run_aibou.bat
+app.py
+ask.py
+learn.py
+review.py
+auto_learner.py
+test_*.py

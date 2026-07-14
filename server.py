@@ -5,6 +5,8 @@ server.py — AIBOU ローカルサーバー (FastAPI)
 AIBOUのロジック（知識ベース検索＋LLM）を使ってアドバイスを返す。
 """
 
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -79,5 +81,7 @@ async def get_stats():
 
 
 if __name__ == "__main__":
-    print("AIBOU Server is starting... (http://localhost:8000)")
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    host = os.environ.get("AIBOU_HOST", "127.0.0.1")
+    port = int(os.environ.get("AIBOU_PORT", "8000"))
+    print(f"AIBOU Server is starting... (http://{host}:{port})")
+    uvicorn.run(app, host=host, port=port)

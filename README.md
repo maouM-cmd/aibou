@@ -96,3 +96,17 @@ hermes3:8bが重い環境は `set AIBOU_MODEL=llama3.2:1b` で軽量化できる
 ```bash
 python -m pytest test_aibou_kb.py -q
 ```
+
+## Qwen Cloudで動かす場合（ハッカソン提出用）
+
+ふだんのローカル利用（Ollama）には影響しません。切り替えたい時だけ以下の環境変数を設定してください。
+
+```bash
+pip install openai
+
+set AIBOU_PROVIDER=qwen
+set DASHSCOPE_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+python ask.py "こんにちは"
+```
+
+詳細（Alibaba Cloudへのデプロイ手順・提出情報）は [`deploy/DEPLOYMENT.md`](deploy/DEPLOYMENT.md)・[`SUBMISSION.md`](SUBMISSION.md)・[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) を参照。
