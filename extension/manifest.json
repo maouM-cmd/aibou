@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "AIBOU - もう一人の自分",
+  "version": "1.0",
+  "description": "あなたのブラウジングを監視し、過去の経験に基づいたアドバイスをくれる相棒AI。",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "tabs",
+    "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>",
+    "http://127.0.0.1:8000/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": ["styles.css"],
+      "js": ["content.js"]
+    }
+  ],
+  "action": {
+    "default_title": "AIBOU 設定"
+  }
+}

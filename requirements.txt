@@ -1,0 +1,17 @@
+# --- コア（ask.py / learn.py / review.py に必要） ---
+chromadb>=0.5
+rich>=13.0
+
+# --- サーバー＋Chrome拡張連携（server.py に必要） ---
+fastapi>=0.110
+uvicorn>=0.29
+
+# --- デスクトップ常駐（app.py に必要） ---
+pygetwindow>=0.0.9
+mss>=9.0
+Pillow>=10.0
+SpeechRecognition>=3.10
+pyttsx3>=2.90
+keyboard>=0.13
+
+# 前提: Ollama がローカルで起動していること（ollama pull hermes3:8b）
