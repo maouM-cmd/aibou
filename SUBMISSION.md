@@ -26,9 +26,11 @@ https://github.com/maouM-cmd/aibou
 （ライセンス: MIT、`LICENSE`ファイル参照）
 
 ## Alibaba Cloudデプロイの証拠
-- コード: [`aibou.py`](aibou.py) の `_call_qwen_raw()`（Alibaba CloudのDashScope APIを呼び出し）
-- デプロイ手順・構成: [`deploy/DEPLOYMENT.md`](deploy/DEPLOYMENT.md)、[`Dockerfile`](Dockerfile)
-- 公開URL: `<デプロイ後にDEPLOYMENT.mdから転記>`
+**未対応**（このプロジェクトはAlibaba Cloud上へのデプロイは行っていません。判断の経緯は以下の通りです）
+
+- コード上はAlibaba Cloudのサービス（DashScope／Qwen Cloud、`https://dashscope-intl.aliyuncs.com/compatible-mode/v1`）を[`aibou.py`](aibou.py)の`_call_qwen_raw()`で呼び出しており、Alibaba CloudのAPI自体は利用しています
+- バックエンド（`server.py`）自体のAlibaba Cloud ECS等へのホスティングは、新規クラウドアカウント作成・支払い情報登録が必要になるため、今回は見送りました
+- デプロイ手順自体は[`deploy/DEPLOYMENT.md`](deploy/DEPLOYMENT.md)・[`Dockerfile`](Dockerfile)として用意済みで、実行すれば即デプロイ可能な状態です（今後対応する場合の準備は完了）
 
 ## アーキテクチャ図
 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
@@ -39,8 +41,8 @@ https://github.com/maouM-cmd/aibou
 **推奨構成**:
 1. (0:00-0:30) コンセプト説明：「学ぶほど賢くなる相棒AI」、日常使用中であること
 2. (0:30-1:30) ローカル(Ollama)での動作デモ：知識ベース検索→回答
-3. (1:30-2:30) Qwen Cloud切り替えデモ：`AIBOU_PROVIDER=qwen`で同じ質問→Alibaba Cloud上のURLにcurl/ブラウザでアクセスして応答確認
-4. (2:30-3:00) まとめ：ChromaDBによる永続記憶、今後の展望
+3. (1:30-2:30) Qwen Cloud切り替えデモ：`AIBOU_PROVIDER=qwen`で同じ質問→ローカルからQwen Cloud(DashScope)へAPI呼び出しが成功する様子を確認
+4. (2:30-3:00) まとめ：ChromaDBによる永続記憶、今後の展望（Alibaba Cloudへのデプロイは`deploy/DEPLOYMENT.md`として準備済み、という位置づけで触れてもよい）
 
 ## ブログ/SNS投稿（任意・Bonus Prize対象）
 `<投稿後にURLを記入>`

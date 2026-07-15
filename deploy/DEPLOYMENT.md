@@ -1,9 +1,8 @@
 # Alibaba Cloudへのデプロイ手順
 
-> **審査員の方へ**: このプロジェクトがAlibaba Cloud上で稼働していることの証拠として、以下を参照してください。
-> - コード: [`aibou.py`](../aibou.py) の `_call_qwen_raw()` — Alibaba CloudのDashScope（Qwen Cloud）互換APIエンドポイント `https://dashscope-intl.aliyuncs.com/compatible-mode/v1` を呼び出しています
-> - デプロイ設定: このファイルおよび [`Dockerfile`](../Dockerfile) — バックエンド(FastAPIサーバー)をAlibaba Cloud ECS上でDocker実行する手順です
-> - 公開URL: `<デプロイ後にここへ実際のURL/インスタンス情報を追記>`
+> **審査員の方へ（現状のステータス）**: 本プロジェクトは、Alibaba CloudのAPI（DashScope／Qwen Cloud互換エンドポイント `https://dashscope-intl.aliyuncs.com/compatible-mode/v1`）は[`aibou.py`](../aibou.py)の`_call_qwen_raw()`で実際に利用していますが、バックエンド(`server.py`)自体のAlibaba Cloud ECS等へのホスティングは、今回の提出では**未実施**です（新規クラウドアカウント作成が間に合わなかったため）。
+>
+> 以下は「実施すればすぐデプロイできる」状態まで準備した手順書です。今後対応する場合はこの手順で進められます。
 
 ## 前提
 - Alibaba Cloudアカウント（未作成の場合は https://www.alibabacloud.com/ で作成）
